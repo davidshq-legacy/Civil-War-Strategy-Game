@@ -1,0 +1,5 @@
+SUB clrrite
+VIEW (528, 1)-(639, 450)
+CLS 1
+VIEW
+END SUB
