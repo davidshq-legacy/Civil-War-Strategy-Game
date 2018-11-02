@@ -1,3 +1,5 @@
+' Only called by victory.
+' Shows high scores.
 SUB maxx
 COLOR 14: LOCATE 28, 1: PRINT "press a key"; : DO WHILE INKEY$ = "": LOOP
 SCREEN 0: COLOR 14, 5: CLS : COLOR 11, 0

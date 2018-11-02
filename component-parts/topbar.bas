@@ -8,7 +8,8 @@ SUB topbar
 	LOCATE 6, 68: PRINT "Difficulty "; LTRIM$(RTRIM$(STR$(difficult)))
 	LOCATE 7, 68: PRINT "Funds:"; cash(side);
 
-	FOR i = 1 TO 2: IF victory(i) < 0 THEN victory(i) = 0
+	FOR i = 1 TO 2
+		IF victory(i) < 0 THEN victory(i) = 0
 	NEXT i
 	x = victory(1) + victory(2): y = 0
 	c = 9: IF side = 2 THEN c = 7
@@ -21,7 +22,8 @@ SUB topbar
 
 	LOCATE 5, 68: PRINT "("; y; "%)"
 
-a$ = "  Snd": IF noise < 2 THEN a$ = "   Snd": IF noise = 0 THEN a$ = "      "
+a$ = "  Snd"
+IF noise < 2 THEN a$ = "   Snd": IF noise = 0 THEN a$ = "      "
 IF graf > 0 THEN a$ = a$ + " G" + LTRIM$(STR$(graf))
 a$ = a$ + STR$(player)
 COLOR c

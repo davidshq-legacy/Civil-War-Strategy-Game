@@ -1,3 +1,4 @@
+' Computer Player Determining Moves.
 SUB evaluate (index, x)
 from = armyloc(index)
 x = 200: IF aggress! > 1.5 THEN x = 80: IF aggress! > 2 THEN x = 20: IF aggress! > 3 THEN x = 5
