@@ -1,3 +1,4 @@
+' Called from foritfy, animate, menu-utiltiies, railroad, recruit, and turn-update.
 SUB occupy (x)
     occupied(x) = 0
     FOR i = 1 TO 40

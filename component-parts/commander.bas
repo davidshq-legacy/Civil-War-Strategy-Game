@@ -1,8 +1,12 @@
+' Called by menu-commands, navy, and recruit.
 SUB commander (who, empty)
 	empty = 0
 	CALL starfin(star, fin, who)
 	FOR i = star TO fin
-	IF armyloc(i) = 0 AND lname$(i) <> "" THEN empty = i: EXIT SUB
+		IF armyloc(i) = 0 AND lname$(i) <> "" THEN
+			empty = i
+			EXIT SUB
+		END IF
 	NEXT i
 
 '                 generic leaders if set list is exhausted

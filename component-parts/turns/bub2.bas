@@ -1,5 +1,4 @@
 ' Only called by Turn Update.
-' Is it a duplicate of bubble?
 SUB bub2 (limit)
 	DO
 		swaps% = FALSE

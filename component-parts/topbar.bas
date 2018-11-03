@@ -1,3 +1,4 @@
+' Called by menu-main-top-level, menu-utiltiies, menu.
 SUB topbar
 	LOCATE 1, 1: PRINT SPACE$(80);
 	COLOR 11

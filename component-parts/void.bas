@@ -1,3 +1,4 @@
+' Called by navy, railroad, computer-player, evaluate.
 SUB void (a, y)
 	y = 0
 	FOR j = 1 TO 6

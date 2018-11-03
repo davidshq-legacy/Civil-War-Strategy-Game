@@ -1,5 +1,6 @@
 ' When commanders have been exhausted, this creates the generic names
 ' for commanders using Roman Numerals.
+' Only called by commanders.
 SUB roman (target, a$)
 	a$ = "Union "
 	IF target > 20 THEN a$ = "Rebel "

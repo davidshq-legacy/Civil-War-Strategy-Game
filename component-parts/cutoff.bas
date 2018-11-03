@@ -1,3 +1,4 @@
+' Called by resupply, menu-commands, new-army, recruit, iterate.
 SUB cutoff (who, target, a)
     a = 0
     FOR j = 1 TO 6

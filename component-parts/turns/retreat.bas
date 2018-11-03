@@ -1,3 +1,4 @@
+' Called only by turn-update
 SUB retreat (defend, x)
 	x = 0
 	IF player = 1 THEN

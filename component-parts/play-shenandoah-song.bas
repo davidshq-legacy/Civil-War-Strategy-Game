@@ -1,5 +1,4 @@
-SUB shen
-	'                       Shenandoah
+SUB shen	'                       Shenandoah
 	IF noise = 2 THEN
 		IF INKEY$ <> "" THEN choose = 1: EXIT SUB
 		PLAY "T90MFMNo1c4f8f8f4."

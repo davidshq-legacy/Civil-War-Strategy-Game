@@ -1,3 +1,4 @@
+' Called by battle, capture-city, newmonth, special-events, turn-update, victory-conditions-met
 SUB scribe (a$, flag)
 	SELECT CASE flag
 			CASE 1: CALL clrbot: PRINT a$;

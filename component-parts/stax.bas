@@ -1,3 +1,4 @@
+' Called by cancel-move, fortify, usa-map, menu-commands, railroad, battle, and iterate
 SUB stax (who)
 	CALL starfin(star, fin, who)
 	FOR i = star TO fin

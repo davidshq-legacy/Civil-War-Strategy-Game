@@ -1,3 +1,4 @@
+' Called from scribe, capture-city, special-events, victory-conditions-met
 SUB image2 (a$, s)
 	DIM g2(1 TO 8000)
 	mtx$(1) = a$

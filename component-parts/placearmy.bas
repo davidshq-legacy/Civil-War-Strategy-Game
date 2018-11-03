@@ -1,3 +1,4 @@
+' Called from fortify, animate, usa-map, menu-commands, new-army, railroad, battle, iterate, turn-update
 SUB placearmy (which)
 	who = 1: IF which > 20 THEN who = 2
 	x = cityx(armyloc(which)) - 12
