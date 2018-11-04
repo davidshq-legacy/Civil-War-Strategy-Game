@@ -104,6 +104,24 @@ $EXEICON: 'cws.ico'
 _ICON
 _TITLE "VGA Civil War Strategy Game"
 
+	' Necessary Preparations for File Management
+	' That Supports Microsoft UWP restrictions
+	' Create CWS Folder in Local App Data Folder.
+	datapath$ = ENVIRON$("LOCALAPPDATA")
+	IF NOT _DIREXISTS(datapath$ + "\cws") THEN
+		MKDIR datapath$ + "\cws"
+	END IF
+
+	' Copy files from current application directory to CWS in Local App Data.
+	CALL CopyFile("ALTLEAD.DAT", datapath$ + "\cws\ALTLEAD.DAT")
+	CALL CopyFile("ALTMAP.BAT", datapath$ + "\cws\ALTMAP.BAT")
+	CALL CopyFile("ALTMAP.INI", datapath$ + "\cws\ALTMAP.INI")
+	CALL CopyFile("CITIES.GRD", datapath$ + "\cws\CITIES.GRD")
+	CALL CopyFile("CWS.CFG", datapath$ + "\cws\CWS.CFG")
+	CALL CopyFile("CWS.INI", datapath$ + "\cws\CWS.INI")
+	CALL CopyFile("CWSLEAD.DAT", datapath$ + "\cws\CWSLEAD.DAT")
+	CALL CopyFile("HISCORE.CWS", datapath$ + "\cws\HISCORE.CWS")
+
 replay = 0
 newgame:
 pcode = 0: rflag = 0
@@ -4922,4 +4940,13 @@ SUB schooner
 	x = 185 + 200 * RND
 	LINE (x, 390)-(x + 2, 392), 12, BF: LINE (x - 2, 392)-(x + 4, 394), 8, BF
 	NEXT k
+END SUB
+
+SUB CopyFile(source$, dest$)
+	OPEN source$ FOR BINARY AS #1
+	OPEN dest$ FOR BINARY AS #2
+	temp$ = SPACE$(LOF(1))
+	GET #1, 1, temp$
+	PUT #2, 1, temp$
+	CLOSE
 END SUB
