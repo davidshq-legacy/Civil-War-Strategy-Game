@@ -1,0 +1,205 @@
+# Ain't That Something
+A guide to the variables used throughout the source code.
+
+# Peripheral Variables
+- replay = Has a value of either 0 or 1, used to determine whether to play music before showing start game menu, could be eliminated by moving music into sub.
+- pcode = Has a value of 0 or 1, is set to 1 after high scores have been entered. Unclear how this differs from replay's purpose.
+- rflag = Has a value of 0 or 1, is set to 1 when recruiting is no longer an option (e.g. not enough funds).
+- mflag = Has a value of 0 or 1, is set to 1 when movement is no longer an option (e.g. all units have moved).
+- nflag = Has a value of 0 or 1, is set to 1 when naval is no longer an option (e.g. all units have moved, no funds available for building).
+- emancipate = Has a value of 0 or 1, indicates whether emancipation has already occurred in the game.
+- filel = Has a value of 0 or 1.
+
+# Core Variables
+- usadv = Adds x amount to the income per turn of the Union; x is determined by the difficulty and realism settings as well as the number of players.
+
+# Core Arrays
+- armysize(k) = Contains forty items from 1 to 40.
+    - armyloc(k)
+    - armymove(k)
+    - armylead(k)
+    - armyname$(k)
+- navysize(k) = Contains two items from 1 to 2.
+    - navyloc(k)
+    - navymove(k)
+- rr(k) = Contains two items
+- victory(k) = Contains two items
+- tracks(k) = Contains two items.
+- vicflag() = Victory flags.
+- mtn()
+- font$(k)
+- realism
+- year
+- a$
+- STRING$
+- fleet$(i)
+- player
+- side
+- randbal
+- turbo!
+- difficult
+- cash()
+- choose
+- graphic()
+- Ncap
+- noise
+- city$(i)
+- vptotal
+- usadv
+- cityx(i)
+- cityy(i)
+- cityp(i)
+- cityv(i)
+- cityo(i)
+- matrix(i, j)
+- control(x)
+- victory(x)
+- cash()
+- wtype
+- hilite
+- tlx
+- tly
+- colour
+- size
+- history
+- month$(month)
+- STR$(year)
+- control(x)
+- income(i)
+- capcity(i)
+- commerce
+- raider
+- chosit
+- mtx$()
+- size
+- z
+- x
+- y
+- STR$(limit)
+- armyname$
+- star
+- fin
+- target
+- supply(i)
+- realism
+- max
+- array()
+- force$(side)
+- index
+- victory()
+- empty
+- rating(empty)
+- lname$(empty)
+- armyexper(empty)
+- armylead()
+- armyname$()
+- noise
+- graf 
+- randbal
+- jancam
+- realism
+- history
+- STR$(bold)
+- bw
+- t$
+- bold = AI boldness
+- supply = armysupply?
+- RND
+- fleet$(i)
+- rating(k)
+- train(x)
+- batwon(x)
+- casualty&(x)
+- c
+- from
+- to2
+- x - originx (sometimes)
+- y - originy (sometimes)
+- x1 - destinationx (sometimes)
+- y1 - destinationy (sometimes)
+- anima
+- is who same as side?
+- attack
+- defend
+- win
+- lose
+- TCR
+- R! = armysize(defend) / armysize(attack)
+- fort(x)
+- spin
+- scale
+- odds!
+- a
+- k
+- graphic(x)
+- graphic
+- hit
+- hit1
+- pct!
+- DEFAC
+- xbar
+- vary
+- killd
+- killa
+- odds!
+- s
+- casualty&(s)
+- batwon(s)
+- victory(s)
+- occupied(i)
+- best
+- y
+- ATKFAC
+- DEFAC
+- array(size)
+- myside
+- cost
+- from
+- dest
+- kind
+- aggress!
+- hit(x)
+- chx
+- commerce
+- raider
+- grudge
+- fleet$(who)
+- force$(who)
+- empty
+- hit(who)
+- SQR(vary)
+- limit
+- rrfrom(who)
+- rcity(i)
+- fort(i)
+- slush
+- z
+- image
+- flag
+- brray(i)
+- active
+- flee
+- swaps%
+- odds!
+- plus
+- w
+- g2 (1 to 8000)
+- INKEY$
+- vptotal
+- thrill
+- month$
+- month
+- m
+- boxc
+- wtype
+- b1
+- wide
+- row
+- brx
+- bry
+- POS(0)
+- CSRLIN
+- graft(x)
+- switch
+- row1
+- 
