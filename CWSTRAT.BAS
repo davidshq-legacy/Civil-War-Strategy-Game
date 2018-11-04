@@ -87,6 +87,7 @@ COMMON SHARED navyloc(), navysize(), navymove(), occupied(), vptotal, fort()
 COMMON SHARED victory(), graf, noise, capcity(), difficult, usadv, bw
 COMMON SHARED train(), font$(), brray(), jancam, randbal, realism, casualty&()
 COMMON SHARED pcode, history, thrill, fleet$(), commerce, raider, grudge
+COMMON SHARED cwsdatapath$
 '==========================================================================
 DIM SHARED cityx(40), cityy(40), cityv(40), cityp(40), city$(40), lname$(40), rcity(5)
 DIM SHARED cash(2), control(2), matrix(40, 7), income(2), anima(300), rating(40)
@@ -96,6 +97,7 @@ DIM SHARED armymove(40), array(40), starx(8), stary(8), mtn(1 TO 1564), rrfrom(2
 DIM SHARED navyloc(2), navysize(2), navymove(2), occupied(40), fort(40), rr(2)
 DIM SHARED victory(2), capcity(2), emancipate, price(3), tracks(2), fleet$(2)
 DIM SHARED train(2), font$(26), brray(40), casualty&(2), batwon(2), cityo(40)
+DIM shared mtz$(21)
 
 DIM SHARED graphic(1 TO 1564), Ncap(60)
 DIM SHARED graft(1 TO 1564)
@@ -107,20 +109,21 @@ _TITLE "VGA Civil War Strategy Game"
 	' Necessary Preparations for File Management
 	' That Supports Microsoft UWP restrictions
 	' Create CWS Folder in Local App Data Folder.
-	datapath$ = ENVIRON$("LOCALAPPDATA")
-	IF NOT _DIREXISTS(datapath$ + "\cws") THEN
-		MKDIR datapath$ + "\cws"
+	localappdatapath$ = ENVIRON$("LOCALAPPDATA")
+	cwsdatapath$ = localappdatapath$ + "\cws"
+	IF NOT _DIREXISTS(cwsdatapath$) THEN
+		MKDIR cwsdatapath$
 	END IF
 
 	' Copy files from current application directory to CWS in Local App Data.
-	CALL CopyFile("ALTLEAD.DAT", datapath$ + "\cws\ALTLEAD.DAT")
-	CALL CopyFile("ALTMAP.BAT", datapath$ + "\cws\ALTMAP.BAT")
-	CALL CopyFile("ALTMAP.INI", datapath$ + "\cws\ALTMAP.INI")
-	CALL CopyFile("CITIES.GRD", datapath$ + "\cws\CITIES.GRD")
-	CALL CopyFile("CWS.CFG", datapath$ + "\cws\CWS.CFG")
-	CALL CopyFile("CWS.INI", datapath$ + "\cws\CWS.INI")
-	CALL CopyFile("CWSLEAD.DAT", datapath$ + "\cws\CWSLEAD.DAT")
-	CALL CopyFile("HISCORE.CWS", datapath$ + "\cws\HISCORE.CWS")
+	CALL CopyFile("ALTLEAD.DAT", cwsdatapath$ + "\ALTLEAD.DAT")
+	CALL CopyFile("ALTMAP.BAT", cwsdatapath$ + "\ALTMAP.BAT")
+	CALL CopyFile("ALTMAP.INI", cwsdatapath$ + "\ALTMAP.INI")
+	CALL CopyFile("CITIES.GRD", cwsdatapath$ + "\CITIES.GRD")
+	CALL CopyFile("CWS.CFG", cwsdatapath$ + "\CWS.CFG")
+	CALL CopyFile("CWS.INI", cwsdatapath$ + "\CWS.INI")
+	CALL CopyFile("CWSLEAD.DAT", cwsdatapath$ + "\CWSLEAD.DAT")
+	CALL CopyFile("HISCORE.CWS", cwsdatapath$ + "\HISCORE.CWS")
 
 replay = 0
 newgame:
@@ -202,7 +205,7 @@ notitle:
 GOSUB unionplus
 
 city$(0) = "NONE"
-OPEN "I", 1, "cities.grd"
+OPEN "I", 1, cwsdatapath$ + "\cities.grd"
 vptotal = usadv + 200
 FOR i = 1 TO 40: INPUT #1, a, cityx(i), cityy(i), city$(i), cityp(i), cityv(i)
 cityo(i) = cityp(i)
@@ -235,8 +238,9 @@ END IF
 IF choose = 3 THEN CLS : END
 IF history = 1 THEN
 	CLS
-	IF _FILEEXISTS("cws.his") THEN SHELL "copy cws.his oldhist.ory"
-	OPEN "O", 2, "cws.his"
+	makeoldhistory$ = "copy " + cwsdatapath$ + "\cws.his " + cwsdatapath$ + "\oldhist.ory"
+	IF _FILEEXISTS(cwsdatapath$ + "\cws.his") THEN SHELL makeoldhistory$ ' "copy cws.his oldhist.ory"
+	OPEN "O", 2, cwsdatapath$ + "\cws.his"
 	PRINT #2, TAB(20); "[ HISTORY OF GAME BEGUN "; DATE$; " ]"
 	CLOSE #2
 ELSE
@@ -690,7 +694,7 @@ utile:
 		CASE ELSE
 	   END SELECT
 	CASE 9 ' Files
-	IF _FILEEXISTS("*.sav") THEN filel = 0
+	IF _FILEEXISTS(cwsdatapath$ + "\*.sav") THEN filel = 0
 filex:
 	choose = 23: chosit = 30: IF year = 1861 THEN choose = 22
 	mtx$(0) = "Options"
@@ -709,7 +713,7 @@ loader:
 			IF choose = 1 THEN rflag = 0: mflag = 0: nflag = 0
 			GOTO menu0
 		CASE 3
-			OPEN "O", 1, "cws.cfg"
+			OPEN "O", 1, cwsdatapath$ + "\cws.cfg"
 			WRITE #1, side, graf, noise, difficult, player, turbo!, randbal, train(1), train(2), jancam, realism, batwon(1), batwon(2), casualty&(1), casualty&(2), history, bold
 			CLOSE #1
 			CLS
@@ -1121,113 +1125,153 @@ END SUB
 
 SUB filer (switch)
 	SELECT CASE switch
-		CASE 1
-		OPEN "I", 1, "cwslead.dat"
-		FOR i = 1 TO 40: INPUT #1, lname$(i), rating(i): NEXT i
-		CLOSE #1
-		OPEN "I", 1, "cws.ini"
-		FOR i = 0 TO 2: INPUT #1, force$(i): NEXT i
-		FOR i = 1 TO 12: INPUT #1, month$(i): NEXT i
-		INPUT #1, month, year
-	'               set end game conditions
-		FOR i = 1 TO 6: INPUT #1, vicflag(i): NEXT i
-		vicflag(3) = .4 * vicflag(3)
-		INPUT #1, a             ' number of Yankee armies
-	FOR i = 1 TO a
-		INPUT #1, armyloc(i), armysize(i), armyexper(i), supply(i): occupied(armyloc(i)) = i: armyname$(i) = lname$(i): armylead(i) = rating(i): lname$(i) = ""
-	NEXT i
-		INPUT #1, a             ' number of Rebel armies
-	FOR i = 21 TO 20 + a
-		INPUT #1, armyloc(i), armysize(i), armyexper(i), supply(i)
-		occupied(armyloc(i)) = i: armyname$(i) = lname$(i): armylead(i) = rating(i): lname$(i) = ""
-	NEXT i
-	FOR i = 1 TO 2: INPUT #1, cash(i): NEXT i
-		INPUT #1, ATKFAC, DEFAC, TCR
-		INPUT #1, fleet$(1), navyloc(1), fleet$(2), navyloc(2)
-		FOR k = 1 TO 2: navysize(k) = LEN(fleet$(k)): NEXT k
-		INPUT #1, capcity(1), capcity(2)
+		CASE 1 ' Load General Game Data
+			' Load Commanders Data.
+			OPEN "I", 1, cwsdatapath$ + "\cwslead.dat"
+				FOR i = 1 TO 40
+					INPUT #1, lname$(i), rating(i)
+				NEXT i
+			CLOSE #1
 
-	FOR i = 1 TO 8: INPUT #1, starx(i), stary(i): NEXT i  ' star locations on flag
-		CLOSE #1
-		OPEN "I", 1, "cws.cfg"
-		INPUT #1, side, graf, noise, difficult, player, turbo!, randbal, train(1), train(2), jancam, realism, batwon(1), batwon(2), casualty&(1), casualty&(2), history, bold
-		CLOSE #1
+			' Load Settings Data.
+			OPEN "I", 1, cwsdatapath$ + "\cws.ini"
+				FOR i = 0 TO 2
+					INPUT #1, force$(i)
+				NEXT i
+				FOR i = 1 TO 12
+					INPUT #1, month$(i)
+				NEXT i
+				INPUT #1, month, year
 
-		CASE 2
-		IF _FILEEXISTS("*.sav") THEN choose = -1: EXIT SUB
-		mtx$(0) = "Load"
-		size = 0
-		FOR k = 1 TO 9
-			t$ = "cws" + LTRIM$(STR$(k)) + ".sav"
-			IF _FILEEXISTS(t$) THEN
-				size = size + 1: mtx$(size) = t$: array(size) = k
-			END IF
-		NEXT k
-		CALL bubble((size))
-		tlx = 67: tly = 14 - .5 * size
-		CALL menu(0)
-		CALL clrrite
-		IF choose < 1 THEN EXIT SUB
-		OPEN "I", 1, "cws" + LTRIM$(STR$(array(choose))) + ".sav"
-		COLOR 11: CALL clrbot: PRINT "Loading";
-		INPUT #1, month, year, usadv, a
-		FOR i = 1 TO 40: INPUT #1, armyname$(i), armysize(i), armylead(i), armyloc(i), armyexper(i), supply(i), armymove(i)
-		IF armyloc(i) > 0 THEN
-			IF armyname$(i) = lname$(i) THEN
-				lname$(i) = ""
-			ELSE
-				who = 1: IF i > 20 THEN who = 2
-				CALL starfin(star, fin, who)
-				FOR k = star TO fin
-				IF armyname$(i) = lname$(k) THEN lname$(k) = "": EXIT FOR
+				' Set the End Game Conditions.
+				FOR i = 1 TO 6
+					INPUT #1, vicflag(i)
+				NEXT i
+				vicflag(3) = .4 * vicflag(3)
+
+				' Load Union Armies.
+				INPUT #1, a
+				FOR i = 1 TO a
+					INPUT #1, armyloc(i), armysize(i), armyexper(i), supply(i): occupied(armyloc(i)) = i: armyname$(i) = lname$(i): armylead(i) = rating(i): lname$(i) = ""
+				NEXT i
+
+				' Load Rebel Armies.
+				INPUT #1, a
+				FOR i = 21 TO 20 + a
+					INPUT #1, armyloc(i), armysize(i), armyexper(i), supply(i)
+					occupied(armyloc(i)) = i: armyname$(i) = lname$(i): armylead(i) = rating(i): lname$(i) = ""
+				NEXT i
+				FOR i = 1 TO 2
+					INPUT #1, cash(i)
+				NEXT i
+				INPUT #1, ATKFAC, DEFAC, TCR
+
+				' Load Navies
+				INPUT #1, fleet$(1), navyloc(1), fleet$(2), navyloc(2)
+				FOR k = 1 TO 2
+					navysize(k) = LEN(fleet$(k))
 				NEXT k
+				INPUT #1, capcity(1), capcity(2)
+				
+				' Set Star Locations on Flag
+				FOR i = 1 TO 8
+					INPUT #1, starx(i), stary(i)
+				NEXT i
+			CLOSE #1
+
+			' Load Config Data.
+			OPEN "I", 1, cwsdatapath$ + "\cws.cfg"
+				INPUT #1, side, graf, noise, difficult, player, turbo!, randbal, train(1), train(2), jancam, realism, batwon(1), batwon(2), casualty&(1), casualty&(2), history, bold
+			CLOSE #1
+
+		CASE 2 ' Load Specific Game File
+			' We check in the cwsdatapath for the file.
+			IF _FILEEXISTS(cwsdatapath$ + "\*.sav") THEN choose = -1: EXIT SUB
+			mtx$(0) = "Load"
+			size = 0
+			FOR k = 1 TO 9
+				t$ = cwsdatapath$ + "\cws" + LTRIM$(STR$(k)) + ".sav"
+				IF _FILEEXISTS(t$) THEN
+					' But if the file exists, we don't want to show the full path, just the file name.
+					t$ = "cws" + LTRIM$(STR$(k)) + ".sav"
+					size = size + 1
+					mtx$(size) = t$
+					array(size) = k
+				END IF
+			NEXT k
+			CALL bubble((size))
+			tlx = 67: tly = 14 - .5 * size
+			CALL menu(0)
+			CALL clrrite
+			IF choose < 1 THEN EXIT SUB
+			OPEN "I", 1, cwsdatapath$ + "\cws" + LTRIM$(STR$(array(choose))) + ".sav"
+			COLOR 11: CALL clrbot: PRINT "Loading";
+			INPUT #1, month, year, usadv, a
+			FOR i = 1 TO 40: INPUT #1, armyname$(i), armysize(i), armylead(i), armyloc(i), armyexper(i), supply(i), armymove(i)
+			IF armyloc(i) > 0 THEN
+				IF armyname$(i) = lname$(i) THEN
+					lname$(i) = ""
+				ELSE
+					who = 1: IF i > 20 THEN who = 2
+					CALL starfin(star, fin, who)
+					FOR k = star TO fin
+					IF armyname$(i) = lname$(k) THEN lname$(k) = "": EXIT FOR
+					NEXT k
+				END IF
 			END IF
-		END IF
-		NEXT i
-		FOR i = 1 TO 40: INPUT #1, occupied(i), cityp(i), fort(i): PRINT "."; : NEXT i
-		FOR i = 1 TO 2: INPUT #1, cash(i), control(i), income(i), victory(i), capcity(i)
-		INPUT #1, fleet$(i), navyloc(i), navymove(i), rr(i), tracks(i)
-		navysize(i) = LEN(fleet$(i))
-		NEXT i
+			NEXT i
+			FOR i = 1 TO 40
+				INPUT #1, occupied(i), cityp(i), fort(i): PRINT ".";
+			NEXT i
+			FOR i = 1 TO 2
+				INPUT #1, cash(i), control(i), income(i), victory(i), capcity(i)
+				INPUT #1, fleet$(i), navyloc(i), navymove(i), rr(i), tracks(i)
+				navysize(i) = LEN(fleet$(i))
+			NEXT i
 		
-		CLOSE #1
-		OPEN "I", 1, "cws.cfg"
-		INPUT #1, myside, graf, noise, difficult, player, turbo!, randbal, train(1), train(2), jancam, realism, batwon(1), batwon(2), casualty&(1), casualty&(2), history, bold
-		CLOSE #1
-		SCREEN 12: CLS
-		CLOSE #1: CALL usa: CALL clrbot
-		FOR k = 1 TO 2
-		IF rr(k) > 0 THEN CALL tinytrain(k, 1)
-		NEXT k
-		side = a
+			CLOSE #1
+			OPEN "I", 1, cwsdatapath$ + "\cws.cfg"
+			INPUT #1, myside, graf, noise, difficult, player, turbo!, randbal, train(1), train(2), jancam, realism, batwon(1), batwon(2), casualty&(1), casualty&(2), history, bold
+			CLOSE #1
+			SCREEN 12: CLS
+			CLOSE #1: CALL usa: CALL clrbot
+			FOR k = 1 TO 2
+			IF rr(k) > 0 THEN CALL tinytrain(k, 1)
+			NEXT k
+			side = a
 
-		CASE 3
-		mtx$(0) = "Save Game"
-		FOR k = 1 TO 9
-		mtx$(k) = "cws" + LTRIM$(STR$(k)) + ".sav"
-		IF _FILEEXISTS(mtx$(k)) THEN mtx$(k) = mtx$(k) + " +"
-		NEXT k
-		tlx = 67: size = 9
-		CALL menu(0)
-		IF choose < 1 THEN clrrite: EXIT SUB
-		COLOR 11: CALL clrbot: PRINT "Saving";
+		CASE 3 ' Save Game
+			mtx$(0) = "Save Game"
+			FOR k = 1 TO 9
+				mtx$(k) = "cws" + LTRIM$(STR$(k)) + ".sav"
+				mtz$(k) = cwsdatapath$ + "\cws" + LTRIM$(STR$(k)) + ".sav"
+				IF _FILEEXISTS(mtz$(k)) THEN mtx$(k) = mtx$(k) + " +"
+			NEXT k
+			tlx = 67: size = 9
+			CALL menu(0)
+			IF choose < 1 THEN clrrite: EXIT SUB
+			COLOR 11: CALL clrbot: PRINT "Saving";
 
-		OPEN "O", 1, "cws" + LTRIM$(STR$(choose)) + ".sav"
-		WRITE #1, month, year, usadv, side
-		FOR i = 1 TO 40: WRITE #1, armyname$(i), armysize(i), armylead(i), armyloc(i), armyexper(i), supply(i), armymove(i)
-		NEXT i
-		FOR i = 1 TO 40: WRITE #1, occupied(i), cityp(i), fort(i): PRINT "."; : NEXT i
-		FOR i = 1 TO 2: WRITE #1, cash(i), control(i), income(i), victory(i), capcity(i)
-		WRITE #1, fleet$(i), navyloc(i), navymove(i), rr(i), tracks(i)
-		NEXT i
-		CLOSE #1
+			OPEN "O", 1, cwsdatapath$ + "\cws" + LTRIM$(STR$(choose)) + ".sav"
+			WRITE #1, month, year, usadv, side
+			FOR i = 1 TO 40
+				WRITE #1, armyname$(i), armysize(i), armylead(i), armyloc(i), armyexper(i), supply(i), armymove(i)
+			NEXT i
+			FOR i = 1 TO 40
+				WRITE #1, occupied(i), cityp(i), fort(i): PRINT ".";
+			NEXT i
+			FOR i = 1 TO 2
+				WRITE #1, cash(i), control(i), income(i), victory(i), capcity(i)
+				WRITE #1, fleet$(i), navyloc(i), navymove(i), rr(i), tracks(i)
+			NEXT i
+			CLOSE #1
 		
-		myside = side
-		IF myside < 1 OR myside > 2 THEN myside = 1
-		OPEN "O", 1, "cws.cfg"
-		WRITE #1, myside, graf, noise, difficult, player, turbo!, randbal, train(1), train(2), jancam, realism, batwon(1), batwon(2), casualty&(1), casualty&(2), history, bold
-		CLOSE #1
-		CLS : CALL usa
+			myside = side
+			IF myside < 1 OR myside > 2 THEN myside = 1
+			OPEN "O", 1, cwsdatapath$ + "\cws.cfg"
+			WRITE #1, myside, graf, noise, difficult, player, turbo!, randbal, train(1), train(2), jancam, realism, batwon(1), batwon(2), casualty&(1), casualty&(2), history, bold
+			CLOSE #1
+			CLS : CALL usa
 	END SELECT
 END SUB
 
@@ -3244,7 +3288,7 @@ SUB maxx
 	LOCATE 9, 7: PRINT STRING$(57, "|")
 	FOR i = 1 TO 6: LOCATE 2 + i, 7: PRINT "|"; SPACE$(55); "|": NEXT i
 
-		OPEN "I", 1, "hiscore.cws"
+		OPEN "I", 1, cwsdatapath$ + "\hiscore.cws"
 		FOR s = 1 TO 2
 		COLOR 14, 4: LOCATE 3, 30 * (s - 1) + 10: PRINT force$(s); " HALL of FAME"
 		COLOR 15, 0: FOR i = 1 TO 5
@@ -3274,7 +3318,7 @@ SUB maxx
 	foun:
 			NEXT s
 	       
-		OPEN "O", 1, "hiscore.cws"
+		OPEN "O", 1, cwsdatapath$ + "\hiscore.cws"
 		FOR s = 1 TO 2
 			FOR i = 1 TO 5
 			WRITE #1, city$(5 * (s - 1) + i), matrix(s, i)
@@ -3508,7 +3552,7 @@ SUB report (who)
 	LOCATE 17, 38: PRINT INT(.1 * casualty&(1))
 	LOCATE 17, 45: PRINT INT(.1 * casualty&(2))
 	IF history > 0 AND who > 2 THEN
-		OPEN "O", #1, "battsumm"
+		OPEN "O", #1, cwsdatapath$ + "\battsumm"
 		PRINT #1, " SIDE      BATTLES WON       LOSSES"
 		FOR k = 1 TO 2
 		a$ = " ": IF thrill = k THEN a$ = "*"
@@ -3520,7 +3564,7 @@ SUB report (who)
 
 	recap: ' Recap History
 	CLS : x = 0
-	OPEN "I", 2, "cws.his"
+	OPEN "I", 2, cwsdatapath$ + "\cws.his"
 	DO WHILE NOT EOF(2)
 	INPUT #2, a$
 	COLOR 7: IF INSTR(a$, "[") THEN COLOR 15
@@ -3683,7 +3727,7 @@ SUB scribe (a$, flag)
 			CASE 2: CALL image2(a$, 4)
 	END SELECT
 	IF history > 0 THEN
-		OPEN "A", 2, "cws.his"
+		OPEN "A", 2, cwsdatapath$ + "\cws.his"
 		a$ = LTRIM$(RTRIM$(a$))
 		PRINT #2, a$
 		CLOSE #2
