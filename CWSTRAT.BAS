@@ -326,10 +326,12 @@ SELECT CASE choose
 			COLOR 15: LOCATE 4, 68: PRINT "RAILROAD MOVE"
 			PSET (550, 20), 0
 			DRAW "C15S6R9D4R6U3R3D3R7U5H3U2R9D3G2D6F1D3F5L10D1G1L4H2L7G2L3H2L3U9L2U5R1BF4"
-			z = 9: IF side = 2 THEN z = 7
+			z = 9
+			IF side = 2 THEN z = 7
 			x = POINT(0): y = POINT(1)
 			PAINT (x, y), z, 15
-			COLOR 15: IF side = 1 THEN COLOR 11
+			COLOR 15
+			IF side = 1 THEN COLOR 11
 			CALL traincapacity(side, limit)
 			CALL clrbot: PRINT "Railroad capacity ="; RTRIM$(STR$(limit)); "00";
 			CALL railroad(side)
@@ -342,7 +344,10 @@ SELECT CASE choose
 		mtx$(0) = "End Turn"
 		mtx$(1) = "Yes"
 		mtx$(2) = "NOT YET"
-		size = 2: CALL menu(0): CALL clrrite: IF choose <> 1 THEN chosit = 24: GOTO menu0
+		size = 2
+		CALL menu(0)
+		CALL clrrite
+		IF choose <> 1 THEN chosit = 24: GOTO menu0
 	endrnd:
 		rflag = 0: mflag = 0: nflag = 0
 		IF player = 2 THEN side = side + 1: IF side = 2 THEN GOSUB blanken: CALL usa: GOTO menu0
@@ -351,9 +356,8 @@ SELECT CASE choose
 		CALL report((side)): chosit = 27
 		CALL starfin(star, fin, side)
 		FOR i = star TO fin
-		IF armymove(i) > 0 THEN CALL icon(armyloc(i), armymove(i), 1)
+			IF armymove(i) > 0 THEN CALL icon(armyloc(i), armymove(i), 1)
 		NEXT i
-
 	CASE 7 ' Commands
 	optmen:
 	tlx = 67: tly = 13
@@ -400,16 +404,16 @@ SELECT CASE choose
 			tlx = 67: tly = 5: colour = 5
 			size = 0
 			FOR i = star TO fin
-			IF armyloc(i) = 0 OR supply(i) > 1 GOTO alone
-			IF realism > 0 THEN
-				CALL cutoff(side, armyloc(i), a)
-				IF a < 1 THEN CALL clrbot: COLOR 15: PRINT force$(side); " army in "; city$(armyloc(i)); " is CUT OFF !"; : TICK turbo!: GOTO alone
-			END IF
-			size = size + 1
-			max = 11: IF LEN(armyname$(i)) < 11 THEN max = LEN(armyname$(i))
-			mtx$(size) = LEFT$(armyname$(i), max)
-			array(size) = i
-			alone:
+				IF armyloc(i) = 0 OR supply(i) > 1 GOTO alone
+				IF realism > 0 THEN
+					CALL cutoff(side, armyloc(i), a)
+					IF a < 1 THEN CALL clrbot: COLOR 15: PRINT force$(side); " army in "; city$(armyloc(i)); " is CUT OFF !"; : TICK turbo!: GOTO alone
+				END IF
+				size = size + 1
+				max = 11: IF LEN(armyname$(i)) < 11 THEN max = LEN(armyname$(i))
+				mtx$(size) = LEFT$(armyname$(i), max)
+				array(size) = i
+				alone:
 			NEXT i
 			IF size = 0 THEN COLOR 11: CALL clrbot: PRINT "All eligible "; force$(side); " armies have supplies"; : GOTO menu0
 			CALL menu(6): CALL clrrite
@@ -428,7 +432,8 @@ SELECT CASE choose
 			CALL clrrite
 			mtx$(0) = "Capital"
 			a$ = city$(capcity(side))
-			index = capcity(side): CALL newcity(index)
+			index = capcity(side)
+			CALL newcity(index)
 			IF index = 0 GOTO menu0
 			capcity(side) = index
 			CALL clrbot: PRINT force$(side); " capital moved from "; a$; " to "; city$(capcity(side));
@@ -592,18 +597,19 @@ SELECT CASE choose
 
 			SELECT CASE choose
 			CASE 1
-			randbal = 0: t$ = ""
+				randbal = 0: t$ = ""
 			CASE 2
-			randbal = 3
+				randbal = 3
 			CASE 3
-			randbal = 5
+				randbal = 5
 			CASE 4
-			randbal = 7
+				randbal = 7
 			CASE ELSE
 			END SELECT
 			IF choose > 1 AND choose < 5 THEN t$ = mtx$(choose)
 			CALL clrbot
-			a$ = "": IF randbal = 0 THEN a$ = "OFF"
+			a$ = ""
+			IF randbal = 0 THEN a$ = "OFF"
 			COLOR 11: PRINT "Random Events : "; a$; " "; t$;
 			COLOR 14: PRINT "			press a key";
 			DO WHILE INKEY$ = "": LOOP
@@ -618,38 +624,41 @@ SELECT CASE choose
 			bold = 5 * RND
 			FOR k = 1 TO 6
 				IF RND > .6 THEN
-				armyloc(k) = 0: armysize(k) = 0: armylead(k) = 0
-				armyexper(k) = 0: armymove(k) = 0: supply(k) = 0
+					armyloc(k) = 0: armysize(k) = 0: armylead(k) = 0
+					armyexper(k) = 0: armymove(k) = 0: supply(k) = 0
 				END IF
 			NEXT k
 			FOR k = 21 TO 6
 				IF RND > .6 THEN
-				armyloc(k) = 0: armysize(k) = 0: armylead(k) = 0
-				armyexper(k) = 0: armymove(k) = 0: supply(k) = 0
+					armyloc(k) = 0: armysize(k) = 0: armylead(k) = 0
+					armyexper(k) = 0: armymove(k) = 0: supply(k) = 0
 				END IF
 			NEXT k
-			FOR k = 1 TO 40: CALL occupy(k): NEXT k
+			FOR k = 1 TO 40
+				CALL occupy(k)
+			NEXT k
 			navysize(1) = 10 * RND: IF navysize(1) = 0 THEN navyloc(1) = 0
 			navysize(2) = 10 * RND: IF navysize(2) > 0 THEN navyloc(2) = 27
 			FOR i = 1 TO 2
 				fleet$(i) = ""
 				FOR j = 1 TO navysize(i)
-				a$ = "W": IF RND > .45 * side THEN a$ = "I"
-				fleet$(i) = fleet$(i) + a$
-			NEXT j
+					a$ = "W": IF RND > .45 * side THEN a$ = "I"
+					fleet$(i) = fleet$(i) + a$
+				NEXT j
 			NEXT i
 			IF RND > .7 THEN capcity(2) = 25
 
 			FOR k = 1 TO 40
-			IF RND > .8 THEN rating(k) = rating(k) - 3 + 6 * RND: IF rating(k) > 9 THEN rating(k) = 9
-			IF rating(k) < 1 THEN rating(k) = 1
+				IF RND > .8 THEN rating(k) = rating(k) - 3 + 6 * RND: IF rating(k) > 9 THEN rating(k) = 9
+				IF rating(k) < 1 THEN rating(k) = 1
 			NEXT k
 			CLS
 			CALL usa
 			choose = 30: GOTO utile
 	   CASE 10 ' January Campaigns
 			jancam = 1 - jancam
-			a$ = "PROHIBITED": IF jancam = 1 THEN a$ = "ALLOWED"
+			a$ = "PROHIBITED"
+			IF jancam = 1 THEN a$ = "ALLOWED"
 			COLOR 11
 			CALL clrbot
 			PRINT "January Campaigns : "; a$;
@@ -666,24 +675,26 @@ SELECT CASE choose
 		END IF
 			choose = 32: GOTO utile
 	   CASE 12 ' Check Map Linkages
-		CALL integrity
-		CALL TICK(99)
-		CALL usa
+			CALL integrity
+			CALL TICK(99)
+			CALL usa
 	   CASE 13 ' History
-		history = 1 - history
-		a$ = "OFF": IF history = 1 THEN a$ = "ON"
-		CALL clrbot: PRINT "History is now "; a$;
-		choose = 34: GOTO utile
+			history = 1 - history
+			a$ = "OFF"
+			IF history = 1 THEN a$ = "ON"
+			CALL clrbot: PRINT "History is now "; a$;
+			choose = 34: GOTO utile
 	   CASE 14 ' Aggression
-		bold = bold + 1: IF bold > 5 THEN bold = 0
-		SELECT CASE bold
-		CASE 0: a$ = "PASSIVE"
-		CASE 1: a$ = "TIMID"
-		CASE 2: a$ = "CAUTIOUS"
-		CASE 3: a$ = "NORMAL"
-		CASE 4: a$ = "BOLD"
-		CASE 5: a$ = "RECKLESS"
-		END SELECT
+			bold = bold + 1
+			IF bold > 5 THEN bold = 0
+			SELECT CASE bold
+			CASE 0: a$ = "PASSIVE"
+			CASE 1: a$ = "TIMID"
+			CASE 2: a$ = "CAUTIOUS"
+			CASE 3: a$ = "NORMAL"
+			CASE 4: a$ = "BOLD"
+			CASE 5: a$ = "RECKLESS"
+			END SELECT
 		CALL clrbot
 		COLOR 11
 		PRINT "Enemy Aggression : "; a$; " ("; bold; ")";
@@ -715,44 +726,39 @@ SELECT CASE choose
 			CLOSE #1
 			CLS
 			GOTO newgame
-		CASE 4: GOTO rusure
+		CASE 4
+			choose = 23
+			mtx$(0) = "Quit"
+			mtx$(1) = "Yes"
+			mtx$(2) = "No"
+			size = 2: colour = 5
+			tlx = 67: tly = 15
+			CALL menu(0): CALL clrrite: IF choose = 1 THEN END ELSE GOTO menu0
 	END SELECT
 	CASE 99
-	GOTO endrnd
-CASE ELSE
-	chosit = 22
-	GOTO menu0
+		GOTO endrnd
+	CASE ELSE
+		chosit = 22
+		GOTO menu0
 END SELECT
 GOTO menu0
 '............................................................................
 '                               Subs
 '............................................................................
-topbar:
-LOCATE 1, 1: PRINT SPACE$(80);
-COLOR 11
-LOCATE 1, 10: PRINT "Input your decisions now for "; force$(side); " side "; : COLOR 14: PRINT month$(month); ","; year; "  "
-RETURN
 '............................................................................
-rusure:
-choose = 23
-mtx$(0) = "Quit"
-mtx$(1) = "Yes"
-mtx$(2) = "No"
-size = 2: colour = 5
-tlx = 67: tly = 15
-CALL menu(0): CALL clrrite: IF choose = 1 THEN END ELSE GOTO menu0
+unionplus:
+	usadv = 120 * difficult: IF player = 2 THEN usadv = 50 * difficult
+	IF realism > 0 THEN usadv = usadv * .7
+	RETURN
 '............................................................................
-unionplus: usadv = 120 * difficult: IF player = 2 THEN usadv = 50 * difficult
-	   IF realism > 0 THEN usadv = usadv * .7
-	   RETURN
-'............................................................................
-blanken:        c = 1: IF side = 2 THEN c = 7
-		CLS : LINE (100, 200)-(500, 300), c, BF
-		LINE (100, 200)-(500, 300), 8 - c, B
-		COLOR 7: LOCATE 14, 31: PRINT " "; month$(month); year
-		COLOR 11: LOCATE 17, 30: PRINT force$(side); " PLAYER TURN"
-		DO WHILE INKEY$ = "": LOOP
-		RETURN
+blanken:
+	c = 1: IF side = 2 THEN c = 7
+	CLS : LINE (100, 200)-(500, 300), c, BF
+	LINE (100, 200)-(500, 300), 8 - c, B
+	COLOR 7: LOCATE 14, 31: PRINT " "; month$(month); year
+	COLOR 11: LOCATE 17, 30: PRINT force$(side); " PLAYER TURN"
+	DO WHILE INKEY$ = "": LOOP
+	RETURN
 '............................................................................
 DATA "U2E2F2D2BU1L3","U4R3F1G1L2BR2BF1G1L2","H1U2E1R2F1BD2G1L1"
 DATA "U4R3F1D1D1G1L2","U4R3BD2BL1L2D2R3","U4R3BD2BL1L2","H1U2E1R3BD2L2BD2R2U1"
