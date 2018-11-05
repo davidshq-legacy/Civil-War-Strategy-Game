@@ -1,0 +1,3 @@
+- 2.11 
+    - Fixed issue when wrapped as a UWP app that caused crashes when saving games.
+    - Code optimizations to ease future enhancements.
