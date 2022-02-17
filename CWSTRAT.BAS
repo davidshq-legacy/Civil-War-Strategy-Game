@@ -3503,25 +3503,32 @@ SUB report (who)
 	c = 9: IF side = 2 THEN c = 7
 	CALL usa
 	CALL starfin(star, fin, side)
-	FOR k = star TO fin
-		IF armysize(k) > 0 THEN
-		COLOR c
-		x = cityx(armyloc(k))
-		y = cityy(armyloc(k))
-		z = 10: IF armysize(k) < 1000 THEN z = 9
-		x = x / 8 - 2: y = y / 16
-		IF y > 26 THEN y = 26
-		FOR j = 0 TO 3
-		LOCATE y + j, x: PRINT SPACE$(z);
-		NEXT j
-		LOCATE y, x: PRINT "Siz:"; : CALL strong(k)
-		LOCATE y + 1, x: PRINT "Ldr:"; armylead(k)
-		LOCATE y + 2, x: PRINT "Xpr:"; armyexper(k)
-		LOCATE y + 3, x: PRINT "Sup:"; supply(k);
-		LINE (8 * (x - 1) - 1, 16 * (y - 1) - 1)-(8 * (x + z - 1) + 1, 16 * (y + 3) + 1), 15, B
-		TICK 1
-	END IF
-	NEXT k
+        FOR k = star TO fin
+            IF armyname$(rr(side)) = armyname$(k) THEN
+                from = tracks(who)
+                x = cityx(from)
+                y = cityy(from)
+            ELSE
+                x = cityx(armyloc(k))
+                y = cityy(armyloc(k))
+            END IF
+
+            IF armysize(k) > 0 THEN
+                COLOR c
+                z = 10: IF armysize(k) < 1000 THEN z = 9
+                x = x / 8 - 2: y = y / 16
+                IF y > 26 THEN y = 26
+                FOR j = 0 TO 3
+                    LOCATE y + j, x: PRINT SPACE$(z);
+                NEXT j
+                LOCATE y, x: PRINT "Siz:";: CALL strong(k)
+                LOCATE y + 1, x: PRINT "Ldr:"; armylead(k)
+                LOCATE y + 2, x: PRINT "Xpr:"; armyexper(k)
+                LOCATE y + 3, x: PRINT "Sup:"; supply(k);
+                LINE (8 * (x - 1) - 1, 16 * (y - 1) - 1)-(8 * (x + z - 1) + 1, 16 * (y + 3) + 1), 15, B
+                TICK 1
+            END IF
+        NEXT k
 	GOTO endrep
 
 	frep: ' Force Summary
